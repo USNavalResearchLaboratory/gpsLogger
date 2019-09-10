@@ -48,7 +48,7 @@ gpsReport.pl    - Perl script to analyze gpsLogger logs and (optionally)
                   Type "gpsReport.pl --help" for usage/syntax.  
 
 TO BUILD:                   
-       gcc -o gpsLogger gpsLogger.cpp gpsPub.cpp nmeaParse.cpp             
+       g++ -o gpsLogger gpsLogger.cpp gpsPub.cpp nmeaParse.cpp             
  
  
 USAGE:
@@ -63,9 +63,6 @@ set      - cause "gpsLogger" to set system time upon
           option is used, continually adjust time
           to track GPS time.
           
-pps      - cause "gpsLogger" to wait for pulse-per-second
-          (PPS) signal on the serial port DCD pin.
-          
 force    - cause "gpsLogger" to perform a hard "settimeofday()"
            to _force_ the system clock into sync with GPS
            immediately instead of gradually converging towards
@@ -73,6 +70,18 @@ force    - cause "gpsLogger" to perform a hard "settimeofday()"
            (Note that if the delta(systemTime, gpsTime) is
            greater than or equal to one second, "gpsLogger"
            will force the time to hard adjust)
+          
+pps      - cause "gpsLogger" to wait for pulse-per-second
+          (PPS) signal on the serial port DCD (or optionally
+          the CTS) pin.
+
+cts      - cause "gpsLogger" to use clear-to-send (CTS) signal
+           for PPS signal instead of default DCD pin.
+           
+invert   - By default, "gpsLogger" waits for a low-to-hi transition
+           of the PPS signal for pulse detection.  The "invert"
+           option here inverts this logic to look for a
+           hi-to-low transition instead.
 
 gps35    - cause "gpsLogger" to send configuration sentence
           for Garmin GPS-35 units to turn on PPS operation.

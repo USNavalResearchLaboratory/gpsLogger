@@ -1,0 +1,7 @@
+all:	gpsLogger
+
+gpsLogger:
+	g++ $(SYSTEM_HAVES) -o gpsLogger gpsLogger.cpp gpsPub.cpp nmeaParse.cpp
+
+clean:
+	rm -f gpsLogger

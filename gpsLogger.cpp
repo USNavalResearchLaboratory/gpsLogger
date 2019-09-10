@@ -5,18 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <termio.h>
+#include <termios.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <sys/time.h>
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
 #include <sched.h>  // for process priority boost
-
-#define LINUX 1
 
 #define VERSION "1.8"
 
@@ -39,7 +38,7 @@ class GPSLogger
     private:
         bool        running;
         FILE*       log_ptr;
-        int         serial_fd;
+        int         input_fd;
         GPSHandle   gps_handle;
         GPSPosition p;
             
@@ -64,7 +63,7 @@ int main(int argc, char* argv[])
 
 
 GPSLogger::GPSLogger()
-    : running(false), log_ptr(NULL), serial_fd(-1), gps_handle(NULL)
+    : running(false), log_ptr(NULL), input_fd(-1), gps_handle(NULL)
 {
 }
 
@@ -72,7 +71,8 @@ bool GPSLogger::Main(int argc, char* argv[])
 {
     bool setTime = false;
     bool logging = true;
-    const char* serialDevice = "/dev/ttyS0";
+    const char* inputDevice = "/dev/ttyS0";
+    bool isSerialDevice = true;
     const char* pubFile = NULL;
     const char* logFileName = NULL;
     unsigned int baud = 4800;
@@ -85,12 +85,15 @@ bool GPSLogger::Main(int argc, char* argv[])
     unsigned long largeTimeChangeDelta = 0;
     bool forceClock = false;  // if true, force clock using settimeofday()
                               // instead of adjtime() on first sync
+    int ppsSignal = TIOCM_CD;
+    bool doInvert = false;
     
     // 1) Parse command-line options
     char** ptr = argv + 1;
+    size_t len = *ptr ? strlen(*ptr) : 0;
     while (*ptr)
     {
-        if (!strncmp("set", *ptr, 3))
+        if (!strncmp("set", *ptr, len))
         {
             ptr++;
             setTime = true;
@@ -100,17 +103,17 @@ bool GPSLogger::Main(int argc, char* argv[])
             ptr++;
             use_pps = true;
         }
-        else if (!strncmp("gps35", *ptr, 3))
+        else if (!strncmp("gps35", *ptr, len))
         {
             ptr++;
             configureGPS35 = true;
         }
-        else if (!strncmp("ver", *ptr, 3))
+        else if (!strncmp("version", *ptr, len))
         {
             ptr++;
             fprintf(stderr, "gpsLogger Version %s\n", VERSION);
         }
-        else if (!strncmp("bin", *ptr, 3))
+        else if (!strncmp("bin", *ptr, len))
         {
             ptr++;
             nmeaParse = false;
@@ -125,17 +128,27 @@ bool GPSLogger::Main(int argc, char* argv[])
             ptr++;
             debug = true;
         }
-        else if (!strncmp("check", *ptr, 5))
+        else if (!strncmp("check", *ptr, len))
         {
             ptr++;
             requireChecksum = true;
         }
-        else if (!strncmp("force", *ptr, 5))
+        else if (!strncmp("force", *ptr, len))
         {
             ptr++;
             forceClock = true;
         }
-        else if (!strncmp("log", *ptr, 3))
+        else if (!strncmp("cts", *ptr, len))
+        {
+            ptr++;
+            ppsSignal = TIOCM_CTS;
+        }
+        else if (!strncmp("invert", *ptr, len))
+        {
+            ptr++;
+            doInvert = true;
+        }
+        else if (!strncmp("log", *ptr, len))
         {
             ptr++;
             if (*ptr)
@@ -149,16 +162,32 @@ bool GPSLogger::Main(int argc, char* argv[])
                 return false;   
             }
         }
-        else if (!strncmp("dev", *ptr, 3))
+        else if (!strncmp("input", *ptr, len))
         {
             ptr++;
             if (*ptr)
             {
-                serialDevice = *ptr++;
+                inputDevice = *ptr++;  
+                isSerialDevice = false; // "input" is non-serial device
             }
             else
             {
-                fprintf(stderr, "gpsLogger: No <serialDevice> argument given!\n");
+                fprintf(stderr, "gpsLogger: No <inputDevice> argument given!\n");
+                Usage();
+                return false;   
+            }
+        }
+        else if (!strncmp("device", *ptr, len))
+        {
+            ptr++;
+            if (*ptr)
+            {
+                inputDevice = *ptr++;
+                isSerialDevice = true;
+            }
+            else
+            {
+                fprintf(stderr, "gpsLogger: No <inputDevice> argument given!\n");
                 Usage();
                 return false;   
             }
@@ -177,7 +206,7 @@ bool GPSLogger::Main(int argc, char* argv[])
                 return false;   
             }
         }
-        else if (!strncmp("pub", *ptr, 3))
+        else if (!strncmp("pub", *ptr, len))
         {
             ptr++;
             if (*ptr)
@@ -246,92 +275,90 @@ bool GPSLogger::Main(int argc, char* argv[])
         flags = O_RDWR;
     else
         flags = O_RDONLY;
-    int serial_fd = open(serialDevice, flags);
-    if (serial_fd < 0)
+    int input_fd = open(inputDevice, flags);
+    if (input_fd < 0)
     {
-        perror("gpsLogger: Error opening serial port!");
+        perror("gpsLogger: Error opening input:");
         Cleanup();
         return false;   
     }
-    // Set up serial port attributes
-    struct termios attr;
-    if (tcgetattr(serial_fd, &attr) < 0)
-    {
-        perror("gpsLogger: Error getting serial port settings!");
-        close(serial_fd);
-        Cleanup();
-        return false;   
-    }
-    attr.c_cflag &= ~PARENB;  // no parity
-    attr.c_cflag &= ~CSIZE;   // 8-bit bytes (first, clear mask, 
-    attr.c_cflag |= CS8;      //              then, set value)
-    cfmakeraw(&attr);
-    attr.c_cflag |= CLOCAL;
-    
-    speed_t speed;
-    switch(baud)
-    {
-        case 4800:
-            speed = B4800;
-            break;
-        case 9600:
-            speed = B9600;
-            break;
-            
-        default:
-            fprintf(stderr, "gpsLogger: Invalid <baudRate> setting!\n");
+    if (isSerialDevice)
+        {
+        // Set up serial port attributes
+        struct termios attr;
+        if (tcgetattr(input_fd, &attr) < 0)
+        {
+            perror("gpsLogger: Error getting serial port settings!");
+            close(input_fd);
             Cleanup();
-            return false;
-    }
-    
-    if (cfsetispeed(&attr, speed))
-    {
-        perror("gpsLogger: cfsetispeed() error");
-        close(serial_fd);
-        Cleanup();
-        return false;   
-    }
-    if (cfsetospeed(&attr, speed))
-    {
-        perror("gpsLogger: cfsetospeed() error");
-        close(serial_fd);
-        Cleanup();
-        return false;   
-    }
-    
-    attr.c_cc[VTIME]    = 100; // (100 * 0.1 sec) 10 second timeout
-    attr.c_cc[VMIN]     = 0;   // 1 char satisfies read
-    
-    if (tcsetattr(serial_fd, TCSANOW, &attr) < 0)
-    {
-        perror("gpsLogger: Error setting serial port settings");
-        close(serial_fd); 
-        Cleanup();
-        return false;   
-    }
+            return false;   
+        }
+        attr.c_cflag &= ~PARENB;  // no parity
+        attr.c_cflag &= ~CSIZE;   // 8-bit bytes (first, clear mask, 
+        attr.c_cflag |= CS8;      //              then, set value)
+        cfmakeraw(&attr);
+        attr.c_cflag |= CLOCAL;
+
+        speed_t speed;
+        switch(baud)
+        {
+            case 4800:
+                speed = B4800;
+                break;
+            case 9600:
+                speed = B9600;
+                break;
+
+            default:
+                fprintf(stderr, "gpsLogger: Invalid <baudRate> setting!\n");
+                Cleanup();
+                return false;
+        }
+
+        if (cfsetispeed(&attr, speed))
+        {
+            perror("gpsLogger: cfsetispeed() error");
+            close(input_fd);
+            Cleanup();
+            return false;   
+        }
+        if (cfsetospeed(&attr, speed))
+        {
+            perror("gpsLogger: cfsetospeed() error");
+            close(input_fd);
+            Cleanup();
+            return false;   
+        }
+
+        attr.c_cc[VTIME]    = 100; // (100 * 0.1 sec) 10 second timeout
+        attr.c_cc[VMIN]     = 0;   // 1 char satisfies read
+
+        if (tcsetattr(input_fd, TCSANOW, &attr) < 0)
+        {
+            perror("gpsLogger: Error setting serial port settings");
+            close(input_fd); 
+            Cleanup();
+            return false;   
+        }
 
 #ifdef ASYNC_LOW_LATENCY  // (LINUX only?)  
-    // Try to set low latency
-    struct serial_struct serinfo;
-    if (ioctl(serial_fd, TIOCGSERIAL, &serinfo) < 0)
-    {
-		perror("gpsLogger: Cannot get serial info");
-        close(serial_fd);
-		Cleanup();
-        return false;
-    }
-    else
-    {
-        serinfo.flags |= ASYNC_LOW_LATENCY;
-        if (ioctl(serial_fd, TIOCSSERIAL, &serinfo) < 0) 
+        // Try to set low latency
+        struct serial_struct serinfo;
+        if (ioctl(input_fd, TIOCGSERIAL, &serinfo) < 0)
         {
-		    perror("gpsLogger: Cannot set low latency option");
-            close(serial_fd);
-		    Cleanup();
-            return false;
-	    }
-    }
+		    perror("gpsLogger: Cannot get serial info");
+            fprintf(stderr, "gpsLogger: Warning - low latency operation not supported on serial device\n");
+        }
+        else
+        {
+            serinfo.flags |= ASYNC_LOW_LATENCY;
+            if (ioctl(input_fd, TIOCSSERIAL, &serinfo) < 0) 
+            {
+		        perror("gpsLogger: Warning: cannot set low latency option");
+	        }
+        }
 #endif // ASYNC_LOW_LATENCY
+    }  // end if (isSerialDevice)
     
     if (configureGPS35)
     {
@@ -342,7 +369,7 @@ bool GPSLogger::Main(int argc, char* argv[])
         unsigned int put = 0;
         while (put < len)
         {
-            int result = write(serial_fd, cmd+put, len-put);
+            int result = write(input_fd, cmd+put, len-put);
             if (result < 0)
             {
                 if (EINTR != errno)
@@ -363,7 +390,7 @@ bool GPSLogger::Main(int argc, char* argv[])
         put = 0;
         while (put < len)
         {
-            int result = write(serial_fd, cmd+put, len-put);
+            int result = write(input_fd, cmd+put, len-put);
             if (result < 0)
             {
                 if (EINTR != errno)
@@ -386,7 +413,7 @@ bool GPSLogger::Main(int argc, char* argv[])
                 unsigned int i = 0;
                 while (i < 511)
                 {
-                  int result = read(serial_fd, &buf[i], 1);
+                  int result = read(input_fd, &buf[i], 1);
                   if (result < 0)
                   {
                       if (EINTR != errno)
@@ -431,17 +458,20 @@ bool GPSLogger::Main(int argc, char* argv[])
     p.stale = true;
     GPSPublishUpdate(gps_handle, &p);
     // Flush input to make sure we're getting a fresh sentence
-    tcflush(serial_fd, TCIFLUSH);
+    if (isSerialDevice) tcflush(input_fd, TCIFLUSH);
     running = true;
+    
     enum LineStatus {LOW, HI};
+    
     while (running)
     {
         LineStatus dcdCurrent;
         struct timeval pulseTime;
         struct timezone tz;
-        if (use_pps)
+#ifdef LINUX
+        if (use_pps  && isSerialDevice)
         {
-            tcflush(serial_fd, TCIFLUSH);
+            tcflush(input_fd, TCIFLUSH);
             struct itimerval timer;
             timer.it_interval.tv_sec = 10;
             timer.it_interval.tv_usec = 0;
@@ -452,7 +482,7 @@ bool GPSLogger::Main(int argc, char* argv[])
                 perror("gpsLogger: setitimer() error");      
             }
             // Wait for pulse (change low->hi in DCD)
-            if (ioctl(serial_fd, TIOCMIWAIT, TIOCM_CD) < 0)
+            if (ioctl(input_fd, TIOCMIWAIT, ppsSignal) < 0)
             {
                 perror("gpsLogger: ioctl(TIOCMIWAIT) error");
                 continue; 
@@ -469,19 +499,21 @@ bool GPSLogger::Main(int argc, char* argv[])
             }
             // Make sure we caught a low->hi transition
             int status;
-            if (ioctl(serial_fd, TIOCMGET, &status) < 0)
+            if (ioctl(input_fd, TIOCMGET, &status) < 0)
             {
                 perror("gpsLogger: ioctl(TIOCMGET) error");
                 continue;   
             }
-            dcdCurrent = (status & TIOCM_CD) ? HI : LOW;
+            dcdCurrent = (0 != (status & ppsSignal)) ? HI : LOW;
+            if (doInvert) dcdCurrent = (HI == dcdCurrent) ? LOW : HI;
             if (LOW == dcdCurrent) continue;
             // Flush input to make sure we're getting a 
             // fresh sentence after the pulse
-            tcflush(serial_fd, TCIFLUSH);
+            tcflush(input_fd, TCIFLUSH);
             if (debug) fprintf(stderr, "gpsLogger: caught PPS\n");
         }
         else
+#endif // LINUX
         {
             dcdCurrent = HI;
         }
@@ -513,7 +545,7 @@ bool GPSLogger::Main(int argc, char* argv[])
         while (dcdGood)
         {
             char character;
-            int result = read(serial_fd, &character, 1);
+            int result = read(input_fd, &character, 1);
             struct timeval currentTime;
             gettimeofday(&currentTime, &tz);
             switch (result)
@@ -539,23 +571,23 @@ bool GPSLogger::Main(int argc, char* argv[])
 			                                     theTime->tm_hour, 
 			                                     theTime->tm_min,
 			                                     theTime->tm_sec,
-			                                     currentTime.tv_usec);
+			                                     (unsigned long)currentTime.tv_usec);
                     SetStale();
                     dcdGood = false;  // reset seek for PPS
                     largeTimeChangeFlag = false;  // reset large time change criteria
+                    break;
                 }
-                break;
                     
                 default:
                     break;
             }
             
-            if (use_pps)
+            if (use_pps && isSerialDevice)
             {
                 // Check DCD to make sure we haven't missed a transition
                 // (we're polling DCD after each character read)
                 int status;
-                if (ioctl(serial_fd, TIOCMGET, &status) < 0)
+                if (ioctl(input_fd, TIOCMGET, &status) < 0)
                 {
                     perror("gpsLogger: ioctl(TIOCMGET) error");
                     dcdGood = false;  // reset seek for PPS
@@ -564,7 +596,9 @@ bool GPSLogger::Main(int argc, char* argv[])
                 }
                 else
                 {
-                    dcdCurrent = (status & TIOCM_CD) ? HI : LOW;
+                    dcdCurrent = (status & ppsSignal) ? HI : LOW;
+                    bool pulseRedect;
+                    if (doInvert) dcdCurrent = (HI == dcdCurrent) ? LOW : HI;
                     if ((LOW == dcdPrevious) && (HI == dcdCurrent))
                     {
                         if (setTimePending)
@@ -711,6 +745,9 @@ bool GPSLogger::Main(int argc, char* argv[])
                         
                         // (TBD) We need to age altitude separately
                         // (For now, we save last valid altitude, if applicable
+                        //  i.e., not all NMEA sentences contain an altitude so
+                        //  we stick with whatever was given (providing the 
+                        //  
                         bool oldAltitudeIsValid = p.zvalid;
                         double oldAltitude = (oldAltitudeIsValid) ? p.z : 0.0;
                         
@@ -754,11 +791,12 @@ bool GPSLogger::Main(int argc, char* argv[])
                                 if (debug) 
                                 {
                                     fprintf(stderr, "gpsLogger: currentTime>%lu.%06lu deltaTime>%ld.%06lu\n",
-                                                    currentTime.tv_sec, currentTime.tv_usec,
+                                                    (unsigned long)currentTime.tv_sec, 
+                                                    (unsigned long)currentTime.tv_usec,
                                                     (long)deltaTime.tv_sec < 0 ? ((long)deltaTime.tv_sec) + 1 :
-                                                     deltaTime.tv_sec,
+                                                     (unsigned long)deltaTime.tv_sec,
                                                     ((long)deltaTime.tv_sec < 0 ? (1000000-deltaTime.tv_usec) :
-                                                    deltaTime.tv_usec ));
+                                                    (unsigned long)deltaTime.tv_usec));
                                 }
                                 
                                 bool smallDeltaTime = (0 == deltaTime.tv_sec) || 
@@ -792,7 +830,7 @@ bool GPSLogger::Main(int argc, char* argv[])
                                         // The "largeTimeChangeFlag" marks the first large delta reading
                                         if (largeTimeChangeFlag)
                                         {
-                                            if (10 > labs(largeTimeChangeDelta - deltaTime.tv_sec))
+                                            if (labs(largeTimeChangeDelta - deltaTime.tv_sec) < 10)
                                             {
                                                 // Consistent large delta from GPS
                                                 changeTime = true;
@@ -838,8 +876,11 @@ bool GPSLogger::Main(int argc, char* argv[])
                                 }  // end if/else (smallDeltaTime)
                             }  // end if (setTime && p.tvalid)
                             
-                            if (!p.zvalid && oldAltitudeIsValid) 
+                            if (!p.zvalid && oldAltitudeIsValid && p.xyvalid)
+                            {
                                 p.z = oldAltitude;
+                                p.zvalid = true;
+                            }
                             
                             if (logging)
                             {
@@ -848,7 +889,7 @@ bool GPSLogger::Main(int argc, char* argv[])
 			                                     theTime->tm_hour, 
 			                                     theTime->tm_min,
 			                                     theTime->tm_sec,
-			                                     currentTime.tv_usec,
+			                                     (unsigned long)currentTime.tv_usec,
                                                  p.y, p.x, p.z);
                             }
                             p.sys_time = currentTime;
@@ -895,7 +936,7 @@ void GPSLogger::SignalHandler(int sigNum)
 			                             theTime->tm_hour, 
 			                             theTime->tm_min,
 			                             theTime->tm_sec,
-			                             currentTime.tv_usec);
+			                             (unsigned long)currentTime.tv_usec);
         }
         break;
             
@@ -921,10 +962,10 @@ void GPSLogger::Stop()
 
 void GPSLogger::Cleanup()
 {
-    if (serial_fd >= 0)
+    if (input_fd >= 0)
     {
-        close(serial_fd);
-        serial_fd = -1;
+        close(input_fd);
+        input_fd = -1;
     }
     if (log_ptr)
     {
@@ -942,6 +983,7 @@ void GPSLogger::Usage()
 {
     fprintf(stderr, "gpsLogger Version %s\n", VERSION);
     fprintf(stderr, "Usage: gpsLogger [setTime][pps][noLog][log <logFile>]\n"
-                    "                 [device <serialDevice>][speed <baud>][gps35]"
-                    "                 [pubFile <pubFile>]\n");
+                    "                 [device <serialDevice>][speed <baud>][gps35]\n"
+                    "                  [cts][invert]\n"
+                    "                 [input <inputName][pubFile <pubFile>]\n");
 }

@@ -6,7 +6,7 @@
 class NMEAParser
 {
     public:
-        static bool NMEAParser::GetTimeAndPosition(const char* buffer, GPSPosition* p);
+        static bool GetTimeAndPosition(const char* buffer, GPSPosition* p);
 
     private:
         enum SentenceType {INVALID_SENTENCE, GPRMC, GPGGA};

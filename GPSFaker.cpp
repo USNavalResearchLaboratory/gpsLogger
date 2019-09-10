@@ -173,7 +173,7 @@ void GPSFaker::run ()
   pos.y = generator->getLatitude();
   memcpy(&pos.gps_time, &time, sizeof(struct timeval));
   memcpy(&pos.sys_time, &time, sizeof(struct timeval));
-  pos.stale = generator->getValid();
+  pos.stale = generator->getValid() ? false : true;
   
   // Store position
   GPSPublishUpdate(handle, &pos);
