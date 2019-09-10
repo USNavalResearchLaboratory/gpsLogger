@@ -1,0 +1,707 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=macintosh">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="gpsLogger_files/filelist.xml">
+<title>gpsLogger</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>R. Brian Adamson</o:Author>
+  <o:Keywords>GPS, time synchronization, mobile networking, MGEN, test tool</o:Keywords>
+  <o:LastAuthor> Jeff Weston</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>134</o:TotalTime>
+  <o:Created>2005-06-17T15:25:00Z</o:Created>
+  <o:LastSaved>2005-06-17T15:25:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>1002</o:Words>
+  <o:Characters>5714</o:Characters>
+  <o:Company>Naval Research Laboratory (NRL)</o:Company>
+  <o:Lines>47</o:Lines>
+  <o:Paragraphs>13</o:Paragraphs>
+  <o:CharactersWithSpaces>6703</o:CharactersWithSpaces>
+  <o:Version>11.6408</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:ActiveWritingStyle Lang="EN-US" VendorID="6" DLLVersion="2" NLCheck="0">1</w:ActiveWritingStyle>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:SpaceForUL/>
+   <w:ULTrailSpace/>
+   <w:DoNotExpandShiftReturn/>
+   <w:AdjustLineHeightInTable/>
+   <w:SelectEntireFieldWithStartOrEnd/>
+   <w:UseWord2002TableStyleRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Courier;
+	panose-1:2 7 4 9 2 2 5 2 4 4;
+	mso-font-alt:"Courier New";
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:1627421319 -2147483648 8 0 66047 0;}
+@font-face
+	{font-family:Times;
+	panose-1:2 2 6 3 5 4 5 2 3 4;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Times;
+	mso-fareast-font-family:Times;
+	mso-bidi-font-family:"Times New Roman";
+	color:windowtext;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Helvetica;
+	mso-fareast-font-family:Times;
+	color:windowtext;
+	mso-font-kerning:16.0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Helvetica;
+	mso-fareast-font-family:Times;
+	color:windowtext;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+h4
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:14.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:windowtext;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:windowtext;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:windowtext;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Helvetica;
+	mso-fareast-font-family:Times;
+	mso-bidi-font-family:"Times New Roman";
+	color:windowtext;
+	mso-font-kerning:14.0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{mso-style-noshow:yes;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:navy;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:windowtext;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:black;}
+pre
+	{margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";
+	color:windowtext;}
+p.Usage, li.Usage, div.Usage
+	{mso-style-name:Usage;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	text-indent:-1.0in;
+	mso-pagination:widow-orphan;
+	tab-stops:1.0in;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:Times;
+	mso-bidi-font-family:"Times New Roman";
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:1006054569;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1719413098;}
+@list l0:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.5in;}
+@list l1
+	{mso-list-id:2058311913;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2036177748;}
+@list l1:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.5in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:Times;
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoTitle><span class=GramE>gpsLogger</span> 1.8</p>
+
+<p><span class=GramE><i style='mso-bidi-font-style:normal'>gpsLogger</i></span>
+is a simple program which monitors a serial port for data from a Global
+Positioning System (GPS) receiver (NMEA format).<span
+style='mso-spacerun:yes'>&nbsp; </span><span class=GramE><i style='mso-bidi-font-style:
+normal'>gpsLogger</i></span> &quot;publishes&quot; the current position to
+shared memory where other client applications can &quot;subscribe&quot; to read
+the current GPS position.<span style='mso-spacerun:yes'>&nbsp; </span>A
+publish/subscribe application program interface API is defined in the &quot;<span
+class=SpellE>gpsPub.h</span>&quot; file in the <i style='mso-bidi-font-style:
+normal'>gpsLogger</i> source code distribution.<span
+style='mso-spacerun:yes'>&nbsp; </span>The NRL Multi-Generator (MGEN) test tool
+set uses this methodology for embedding GPS position information in messages it
+generates.<span style='mso-spacerun:yes'>&nbsp; </span>This tool set has been
+used for mobile wireless network performance evaluation and is available from <a
+href="http://mgen.pf.itd.nrl.navy.mil/">http://mgen.pf.itd.nrl.navy.mil</a>.<span
+style='mso-spacerun:yes'>&nbsp; </span>By default, <i style='mso-bidi-font-style:
+normal'>gpsLogger</i> will also log position information to <span class=SpellE><span
+style='font-family:Courier'>stdout</span></span> in the comma-delimited lines
+of the format:</p>
+
+<p><span class=GramE>time</span>&gt;<i style='mso-bidi-font-style:normal'>&lt;hr&gt;:&lt;min&gt;:&lt;sec&gt;</i>
+position&gt;<i style='mso-bidi-font-style:normal'>&lt;longitude&gt;,&lt;latitude&gt;,&lt;altitude&gt;</i></p>
+
+<p>The time logged is the computer system time in Greenwich Mean Time
+(GMT).<span style='mso-spacerun:yes'>&nbsp; </span>The &lt;latitude&gt; and
+&lt;longitude&gt; are given in units of degrees. Positive &lt;latitude&gt;
+indicates North, negative &lt;latitude&gt; indicates South, positive
+&lt;longitude&gt; indicates East, negative &lt;latitude&gt; indicates West, and
+&lt;altitude&gt; is in units of meters.</p>
+
+<p>Note that <i style='mso-bidi-font-style:normal'>gpsLogger</i> can optionally
+set the system time and synchronize it to GPS.<span
+style='mso-spacerun:yes'>&nbsp; </span>When <i style='mso-bidi-font-style:normal'>gpsLogger</i>
+is used to set the system time, it can work in one of two ways:</p>
+
+<p style='margin-left:.75in;text-indent:-.5in;mso-list:l1 level1 lfo2;
+tab-stops:list .75in'><![if !supportLists]><span style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>1)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>If the <span class=SpellE><u>pps</u></span>
+option is <b style='mso-bidi-font-weight:normal'>not</b> specified, the system
+time is set once (and only once) upon the first valid timestamp received from
+the GPS device.<span style='mso-spacerun:yes'>&nbsp; </span>This time set is
+accurate to within approximately +/- one second, with subsequent system clock
+drift eventually diverging the system time from GPS time.</p>
+
+<p style='margin-left:.75in;text-indent:-.5in;mso-list:l1 level1 lfo2;
+tab-stops:list .75in'><![if !supportLists]><span style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>2)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>If the <span class=SpellE><u>pps</u></span>
+option is specified, <i style='mso-bidi-font-style:normal'>gpsLogger</i> will
+accurately (often within 1 <span class=SpellE>msec</span>) set and adjust the
+system time to track GPS time.<span style='mso-spacerun:yes'>&nbsp; </span>The <span
+class=SpellE><span class=GramE><span style='font-family:Courier'>adjtime</span></span></span><span
+class=GramE><span style='font-family:Courier'>(</span></span><span
+style='font-family:Courier'>)</span> system call is used to keep the system
+time in sync with GPS while preserving a monotonically increasing system clock
+time.<span style='mso-spacerun:yes'>&nbsp; </span>However, if the system time
+diverges more than one second from GPS time, the <span class=SpellE><span
+class=GramE><span style='font-family:Courier'>settimeodday</span></span></span><span
+class=GramE><span style='font-family:Courier'>(</span></span><span
+style='font-family:Courier'>)</span> call is used to force the system time in
+sync with GPS (which may result in a negative system time shift).<span
+style='mso-spacerun:yes'>&nbsp; </span></p>
+
+<p>An explicit <u>force</u> command-line option is provided so that if the
+system time is already within one second of GPS time when gpsLogger is started,
+it will immediately &quot;force&quot; the system time into sync with GPS using
+the <span class=SpellE><span class=GramE><span style='font-family:Courier'>settimeofday</span></span></span><span
+class=GramE><span style='font-family:Courier'>(</span></span><span
+style='font-family:Courier'>)</span> call on its first time adjustment instead
+of <span class=SpellE><span style='font-family:Courier'>adjtime</span></span><span
+style='font-family:Courier'>()</span> which could possibly take a long period
+of time to converge towards GPS if the time delta is close to one second.<span
+style='mso-spacerun:yes'>&nbsp; </span>The <u>force</u> option is provided for
+applications where the user doesn't care about an initial negative system time
+shift and wants to quickly get system time in sync with GPS rather than waiting
+for a possibly lengthy convergence to GPS time.<span
+style='mso-spacerun:yes'>&nbsp; </span>After the initial &quot;forced&quot;
+hard time adjustment, <i style='mso-bidi-font-style:normal'>gpsLogger</i>
+behaves normally, generally using the <span class=SpellE><span class=GramE><span
+style='font-family:Courier'>adjtime</span></span></span><span class=GramE><span
+style='font-family:Courier'>(</span></span><span style='font-family:Courier'>)</span>
+call to keep the system time in sync with GPS, and only invoking <span
+class=SpellE><span style='font-family:Courier'>settimeofday</span></span><span
+style='font-family:Courier'>()</span> when the system time strays more than one
+second from GPS time.<span style='mso-spacerun:yes'>&nbsp; </span></p>
+
+<p>The<i style='mso-bidi-font-style:normal'> gpsLogger</i> utility was created
+as a light-weight alternative to the Network Time Protocol daemon (<span
+class=SpellE><i style='mso-bidi-font-style:normal'>ntpd</i></span>), also
+providing the GPS position information in shared memory for use by other
+applications or processes.<span style='mso-spacerun:yes'>&nbsp; </span>The <span
+class=SpellE><i style='mso-bidi-font-style:normal'>ntpd</i></span> program
+offers much more flexibility when time synchronization is the only concern.</p>
+
+<h1 style='tab-stops:228.0pt'>Download<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></h1>
+
+<p>The gpsLogger package is available at: <a
+href="http://downloads.pf.itd.nrl.navy.mil/proteantools">http://downloads.pf.itd.nrl.navy.mil/proteantools</a></p>
+
+<h2>Files:</h2>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="100%"
+ style='width:100.0%;border-collapse:collapse;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td width="23%" valign=top style='width:23.9%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>gpsLogger.cpp</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td width="76%" valign=top style='width:76.1%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>gpsLogger
+  source code<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width="23%" valign=top style='width:23.9%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>nmeaParse.h</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><br>
+  <span class=SpellE>nmeaParse.cpp</span><o:p></o:p></span></p>
+  </td>
+  <td width="76%" valign=top style='width:76.1%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Routines
+  for parsing NMEA sentences<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width="23%" valign=top style='width:23.9%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>gpsPub.h</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><br>
+  <span class=SpellE>gpsPub.cpp</span><o:p></o:p></span></p>
+  </td>
+  <td width="76%" valign=top style='width:76.1%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Routines
+  for GPS position publish/ subscribe (using shared memory)<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width="23%" valign=top style='width:23.9%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>gpsClient.cpp</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td width="76%" valign=top style='width:76.1%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Example
+  C++ source code for using <span class=SpellE>GPSSubscribe</span>()<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4;mso-yfti-lastrow:yes'>
+  <td width="23%" valign=top style='width:23.9%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>gpsFaker.cpp</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td width="76%" valign=top style='width:76.1%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Program
+  to publish &quot;fake&quot; GPS position.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<h1>To Build</h1>
+
+<p class=Usage><span class=SpellE><span class=GramE>gcc</span></span> -o
+gpsLogger <span class=SpellE>gpsLogger.cpp</span> <span class=SpellE>nmeaParse.cpp</span>
+<span class=SpellE>gpsPub.cpp</span></p>
+
+<h1>Usage:</h1>
+
+<p class=Usage>gpsLogger<span style='mso-tab-count:1'> </span>[set][<span
+class=SpellE>pps</span>][force][check][gps35][<span class=SpellE>noLog</span>]<br>
+[log &lt;<span class=SpellE>logFile</span>&gt;][device &lt;<span class=SpellE>serialDevice</span>&gt;]<br>
+[speed &lt;<span class=SpellE>baudRate</span>&gt;][debug]<br style='mso-special-character:
+line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]></p>
+
+<h2>Options:</h2>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="100%"
+ style='width:100.0%;border-collapse:collapse;mso-yfti-tbllook:16;mso-padding-alt:
+ 0in 5.4pt 0in 5.4pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>set<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Cause
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to set and synchronize
+  the system time to GPS time.<span style='mso-spacerun:yes'>&nbsp;
+  </span>Should be used with the <span class=SpellE><u>pps</u></span> option
+  for the best accuracy.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>pps</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to look for a
+  pulse-per-second (PPS) signal on the serial port data carrier detect (DCD)
+  line to use as a reference for accurate sync of system time to GPS time.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoHeader style='tab-stops:.5in'><span style='font-family:Arial;
+  mso-fareast-font-family:Times;mso-bidi-font-family:"Times New Roman"'>force<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to hard sync the system
+  time of day to GPS time using a call to &quot;<span class=SpellE><span
+  class=GramE>settimeofday</span></span><span class=GramE>(</span>)&quot; on
+  the first time read from the GPS device.<span style='mso-spacerun:yes'>&nbsp;
+  </span>This speeds up convergence of system time to GPS time, but may result
+  in the system's time moving backwards on the first sync to GPS time.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>check<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to <u>require</u> valid
+  checksums on NMEA sentences from the GPS device.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>gps35<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i>, at startup, to attempt
+  to configure a <span class=SpellE>Garmin</span> GPS-35, GPS-16 (and possibly
+  other <span class=SpellE>Garmin</span> or other models) for PPS
+  operation.<span style='mso-spacerun:yes'>&nbsp; </span>The <span
+  class=SpellE><u>pps</u></span> option must also be used for PPS operation.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman"'>noLog</span></span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Cause
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to not output logged
+  position information.<span style='mso-spacerun:yes'>&nbsp; </span>The
+  position information is only available via the published shared memory
+  location.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>log
+  &lt;<span class=SpellE>logFile</span>&gt;<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to output position
+  information as described above to the file named &lt;<span class=SpellE>logFile</span>&gt;.<span
+  style='mso-spacerun:yes'>&nbsp; </span>The <span class=SpellE><u>noLog</u></span><u>
+  </u>option overrides this behavior.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>debug<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Causes
+  <i style='mso-bidi-font-style:normal'>gpsLogger</i> to output debugging
+  information to <span class=SpellE>stderr</span> while running.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>device
+  &lt;<span class=SpellE>serialDevice</span>&gt;<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>This
+  option allows the user to specify the serial port to be monitored.<span
+  style='mso-spacerun:yes'>&nbsp; </span>By default, the device
+  &quot;/dev/ttyS0&quot; is monitored.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>speed
+  &lt;<span class=SpellE>baudRate</span>&gt;<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>This
+  option determines the baud rate configuration of the serial port.<span
+  style='mso-spacerun:yes'>&nbsp; </span>Valid values include 4800 and
+  9600.<span style='mso-spacerun:yes'>&nbsp; </span>By default, the &lt;<span
+  class=SpellE>baudRate</span>&gt; is 4800.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10;mso-yfti-lastrow:yes'>
+  <td width="32%" valign=top style='width:32.26%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>debug<o:p></o:p></span></p>
+  </td>
+  <td width="67%" valign=top style='width:67.74%;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>This
+  option causes <i style='mso-bidi-font-style:normal'>gpsLogger</i> to output
+  debugging information to <span class=SpellE>stderr</span> including NMEA
+  sentences read from the GPS device, etc.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<h2><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Notes:<o:p></o:p></span></h2>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.5in;mso-list:l0 level1 lfo1;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Arial;
+mso-fareast-font-family:Arial'><span style='mso-list:Ignore'>1)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span style='font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>For the <u>gps35</u> option, <i style='mso-bidi-font-style:
+normal'>gpsLogger</i> uses the NMEA &quot;PGRMC&quot; configuration
+sentence.<span style='mso-spacerun:yes'>&nbsp; </span>This may work with other
+GPS device manufacturers and models which support PPS operation.<span
+style='mso-spacerun:yes'>&nbsp; </span>PPS operation may be available without
+use of this option if the device has already been configured for PPS operation.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.5in;mso-list:l0 level1 lfo1;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Arial;
+mso-fareast-font-family:Arial'><span style='mso-list:Ignore'>2)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span style='font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>When the <span class=SpellE><u>pps</u></span> option is
+invoked, the GPS &lt;altitude&gt; information may be unavailable or
+unreliable.<span style='mso-spacerun:yes'>&nbsp; </span>This is because the
+serial port is flushed to properly read the NMEA sentence containing time
+information associated with the corresponding pulse.<span
+style='mso-spacerun:yes'>&nbsp; </span>As a result, the NMEA &quot;GPGGA&quot;
+sentences containing the &lt;altitude&gt; information may be missed.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.5in;mso-list:l0 level1 lfo1;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Arial;
+mso-fareast-font-family:Arial'><span style='mso-list:Ignore'>3)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span style='font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>With regards to setting and synchronizing the computer
+system time to GPS time, <i style='mso-bidi-font-style:normal'>gpsLogger</i>
+uses the </span><span class=SpellE><span class=GramE><span style='font-family:
+Courier'>settimeofday</span></span></span><span class=GramE><span
+style='font-family:Courier'>(</span></span><span style='font-family:Courier'>)</span><span
+style='font-family:Arial;mso-bidi-font-family:"Times New Roman"'> system
+function to abruptly adjust the time when the time differential is greater than
+one second.<span style='mso-spacerun:yes'>&nbsp; </span>Otherwise, the </span><span
+class=SpellE><span class=GramE><span style='font-family:Courier'>adjtime</span></span></span><span
+class=GramE><span style='font-family:Courier'>(</span></span><span
+style='font-family:Courier'>)</span><span style='font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'> system call is use to preserve a monotonically increasing
+system clock.<o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
