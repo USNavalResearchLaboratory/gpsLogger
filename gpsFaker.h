@@ -16,7 +16,7 @@ class GPSFaker
  public:
   static void main (int arg, char* argv[]);
   static void exitWithoutError ();
-  static void exitWithError (char* err);
+  static void exitWithError (const char* err);
   static void signalHandler (int signum);
   
   static GPSFaker* faker;

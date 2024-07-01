@@ -1,5 +1,6 @@
 # build executables
 gpsLogger
+gpsFaker
 
 # OS generated files #
 .DS_Store

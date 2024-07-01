@@ -33,8 +33,10 @@ void GPSFaker::main (int argc, char* argv[])
 
  FakeDataGenerator* gen;
  
+ const char* usage = "Usage: gpsFaker [static <lon> <lat> [flaky]] | [line <start_lon> <start_lat> <end_lon> <end_lat> <time> [flaky]]";
+ 
  if (argc < 2)
-  exitWithError("Need mode.");
+  exitWithError(usage);
  
  if (strcmp(argv[1], "static") == 0)
  {
@@ -102,6 +104,8 @@ void GPSFaker::main (int argc, char* argv[])
   gen = new LineGenerator(flaky, start_long, start_lat, end_long, end_lat,
                           time);
  }
+ else
+  exitWithError(usage);
  
  cout << "Creating faker..." << endl;
  
@@ -120,7 +124,7 @@ void GPSFaker::exitWithoutError ()
  return;
 }
 
-void GPSFaker::exitWithError (char* err)
+void GPSFaker::exitWithError (const char* err)
 {
  std::cout << "Error: " << err << std::endl;
  
