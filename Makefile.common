@@ -2,6 +2,12 @@ all:	gpsLogger
 
 gpsLogger:
 	g++ $(SYSTEM_HAVES) -o gpsLogger gpsLogger.cpp gpsPub.cpp nmeaParse.cpp
+    
+gpsFaker:
+	g++ $(SYSTEM_HAVES) -o gpsFaker gpsFaker.cpp gpsPub.cpp
+
+clean:
+	rm -f gpsLogger
 
 clean:
 	rm -f gpsLogger

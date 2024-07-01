@@ -1,4 +1,4 @@
-#include "GPSFaker.h"
+#include "gpsFaker.h"
 
 #include <cmath>
 #include <cstdlib>
